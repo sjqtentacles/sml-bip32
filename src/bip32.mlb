@@ -1,0 +1,29 @@
+(* MLB for the sml-bip32 library.
+
+ * The dependency DAG has a diamond: sml-codec is needed by sml-crypto,
+ * sml-secp256k1 and sml-base58. To include every structure exactly once we
+ * pull sml-codec / sml-crypto in along a SINGLE path - via sml-secp256k1's
+ * sources.mlb, which transitively includes sml-crypto, which transitively
+ * includes sml-codec - and then add the remaining deps so that nothing
+ * re-includes sml-codec:
+ *   - sml-bigint and sml-ripemd160 are standalone (basis only);
+ *   - sml-base58 is listed by its source files directly, since its own .mlb
+ *     would pull in a second copy of sml-codec.
+ *
+ * Brought in WITHOUT a `local` wrapper so consumers (tests, examples) can use
+ * the vendored structures (Sha256, Hmac, Base58, ...) alongside Bip32. *)
+$(SML_LIB)/basis/basis.mlb
+
+(* secp256k1 -> crypto -> codec : the only path that includes codec + crypto *)
+../lib/github.com/sjqtentacles/sml-secp256k1/sources.mlb
+
+(* standalone deps (basis only) *)
+../lib/github.com/sjqtentacles/sml-bigint/sources.mlb
+../lib/github.com/sjqtentacles/sml-ripemd160/sources.mlb
+
+(* base58 sources directly (sml-codec already in scope above) *)
+../lib/github.com/sjqtentacles/sml-base58/base58.sig
+../lib/github.com/sjqtentacles/sml-base58/base58.sml
+
+bip32.sig
+bip32.sml

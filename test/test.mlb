@@ -1,0 +1,11 @@
+(* Test executable basis: the bip32 library (which pulls in the vendored
+ * sml-secp256k1 / sml-bigint / sml-ripemd160 / sml-base58 / sml-crypto /
+ * sml-codec) plus the harness and runner. *)
+$(SML_LIB)/basis/basis.mlb
+../src/bip32.mlb
+harness.sml
+support.sml
+test_vectors.sml
+test_derivation.sml
+entry.sml
+main.sml

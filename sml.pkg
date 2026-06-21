@@ -1,0 +1,11 @@
+package github.com/sjqtentacles/sml-bip32
+
+require {
+  github.com/sjqtentacles/sml-codec
+  github.com/sjqtentacles/sml-crypto
+  github.com/sjqtentacles/sml-secp256k1
+  github.com/sjqtentacles/sml-bigint
+  github.com/sjqtentacles/sml-ripemd160
+  github.com/sjqtentacles/sml-base58
+  github.com/sjqtentacles/sml-bip39
+}

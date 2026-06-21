@@ -1,0 +1,13 @@
+(* Demo basis: the bip32 library plus the vendored sml-bip39 (mnemonic -> seed).
+ * bip32.mlb has already pulled in sml-crypto / sml-codec (PBKDF2, HMAC, SHA),
+ * so the bip39 sources are listed directly - referencing bip39's own .mlb would
+ * pull a second copy of sml-codec. *)
+$(SML_LIB)/basis/basis.mlb
+
+../src/bip32.mlb
+
+../lib/github.com/sjqtentacles/sml-bip39/wordlist.sml
+../lib/github.com/sjqtentacles/sml-bip39/bip39.sig
+../lib/github.com/sjqtentacles/sml-bip39/bip39.sml
+
+demo.sml

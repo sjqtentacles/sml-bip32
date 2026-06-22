@@ -20,6 +20,9 @@ struct
       hash (opad ^ inner)
     end
 
+  fun hmacSha1 key message = hmacWith Sha1.digest 64 key message
+  fun hmacSha1Hex key message = Base16.encode (hmacSha1 key message)
+
   fun hmacSha256 key message = hmacWith Sha256.digest 64 key message
   fun hmacSha256Hex key message = Base16.encode (hmacSha256 key message)
 

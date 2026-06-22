@@ -67,4 +67,51 @@ sig
   (* Deterministic Miller-Rabin.  The second argument is the number of fixed
      small witness bases to try (clamped to the table size). *)
   val isProbablePrime : int * int -> bool
+
+  (* ---- Integer roots ---- *)
+
+  (* [isqrt n] is the floor of the square root of n; raises [Domain] for n < 0.
+     Satisfies isqrt n * isqrt n <= n < (isqrt n + 1) * (isqrt n + 1). *)
+  val isqrt : int -> int
+  (* An alias for [isqrt]. *)
+  val sqrt  : int -> int
+  (* [nthRoot (k, n)] is the floor of the k-th root of n, for k >= 1 and n >= 0.
+     Raises [Domain] when k < 1 or n < 0. *)
+  val nthRoot : Int.int * int -> int
+
+  (* ---- Bitwise operations ----
+
+     [andb], [orb], [xorb] and [notb] treat each operand as an infinite
+     two's-complement bit string (negatives have infinite leading ones), so the
+     results agree with [IntInf.andb]/[orb]/[xorb]/[notb] for every sign.  The
+     shifts are arithmetic: [shl (n, k)] multiplies by 2^k and [shr (n, k)] is a
+     floored divide by 2^k, agreeing with [IntInf.<<] and [IntInf.~>>].  Bit
+     indices are 0-based from the least-significant bit; negative shift or bit
+     indices raise [Domain]. *)
+  val andb : int * int -> int
+  val orb  : int * int -> int
+  val xorb : int * int -> int
+  val notb : int -> int
+  val shl  : int * Int.int -> int
+  val shr  : int * Int.int -> int
+  (* [bit (n, i)] / [testBit (n, i)] is the i-th two's-complement bit of n. *)
+  val bit     : int * Int.int -> bool
+  val testBit : int * Int.int -> bool
+  (* [n] with two's-complement bit i set / cleared. *)
+  val setBit   : int * Int.int -> int
+  val clearBit : int * Int.int -> int
+  (* The number of set bits in the magnitude |n|. *)
+  val popcount  : int -> Int.int
+  (* The number of bits in the magnitude |n|; [bitLength] of 0 is 0. *)
+  val bitLength : int -> Int.int
+
+  (* ---- Byte serialization (big-endian, unsigned magnitude) ----
+
+     [toBytes n] is the minimal big-endian byte string of the magnitude |n|
+     (no leading zero bytes; 0 encodes as the empty vector); the sign is
+     dropped.  [fromBytes] reads a big-endian unsigned magnitude and always
+     yields a value >= 0.  Hence [fromBytes (toBytes n) = n] for all n >= 0,
+     e.g. 256 <-> [0wx01, 0wx00] and 0 <-> []. *)
+  val toBytes   : int -> Word8Vector.vector
+  val fromBytes : Word8Vector.vector -> int
 end

@@ -48,7 +48,7 @@ test: $(BIN)/test-mlton
 # order (codec -> crypto -> secp256k1; bigint; ripemd160; base58), then the
 # bip32 sources, then the test driver. The suite exits on its own.
 poly test-poly:
-	printf 'use "$(CODECDIR)/base16.sig";\nuse "$(CODECDIR)/base16.sml";\nuse "$(CODECDIR)/sha256.sig";\nuse "$(CODECDIR)/sha256.sml";\nuse "$(CODECDIR)/sha512.sig";\nuse "$(CODECDIR)/sha512.sml";\nuse "$(CRYPTODIR)/hmac.sig";\nuse "$(CRYPTODIR)/hmac.sml";\nuse "$(SECPDIR)/secp256k1.sig";\nuse "$(SECPDIR)/secp256k1.sml";\nuse "$(BIGINTDIR)/bigint.sig";\nuse "$(BIGINTDIR)/bigint.sml";\nuse "$(RIPEMDDIR)/ripemd160.sig";\nuse "$(RIPEMDDIR)/ripemd160.sml";\nuse "$(BASE58DIR)/base58.sig";\nuse "$(BASE58DIR)/base58.sml";\nuse "src/bip32.sig";\nuse "src/bip32.sml";\nuse "test/harness.sml";\nuse "test/support.sml";\nuse "test/test_vectors.sml";\nuse "test/test_derivation.sml";\nuse "test/entry.sml";\nuse "test/main.sml";\n' | $(POLY) -q --error-exit
+	printf 'use "$(CODECDIR)/base16.sig";\nuse "$(CODECDIR)/base16.sml";\nuse "$(CODECDIR)/sha1.sig";\nuse "$(CODECDIR)/sha1.sml";\nuse "$(CODECDIR)/sha256.sig";\nuse "$(CODECDIR)/sha256.sml";\nuse "$(CODECDIR)/sha512.sig";\nuse "$(CODECDIR)/sha512.sml";\nuse "$(CRYPTODIR)/hmac.sig";\nuse "$(CRYPTODIR)/hmac.sml";\nuse "$(SECPDIR)/secp256k1.sig";\nuse "$(SECPDIR)/secp256k1.sml";\nuse "$(BIGINTDIR)/bigint.sig";\nuse "$(BIGINTDIR)/bigint.sml";\nuse "$(RIPEMDDIR)/ripemd160.sig";\nuse "$(RIPEMDDIR)/ripemd160.sml";\nuse "$(BASE58DIR)/base58.sig";\nuse "$(BASE58DIR)/base58.sml";\nuse "src/bip32.sig";\nuse "src/bip32.sml";\nuse "test/harness.sml";\nuse "test/support.sml";\nuse "test/test_vectors.sml";\nuse "test/test_derivation.sml";\nuse "test/entry.sml";\nuse "test/main.sml";\n' | $(POLY) -q --error-exit
 
 all-tests: test test-poly
 

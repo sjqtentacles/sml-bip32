@@ -34,4 +34,11 @@ sig
   val compress   : string -> string
   (* decompress: 33-byte compressed -> 65-byte uncompressed. *)
   val decompress : string -> string
+
+  (* Hex convenience for the raw byte representations above (secret keys,
+     public keys, signatures). toHex encodes bytes as lowercase hex; fromHex
+     decodes hex back to bytes, returning NONE on odd length or non-hex input.
+     Round-trip: fromHex (toHex b) = SOME b. *)
+  val toHex   : string -> string
+  val fromHex : string -> string option
 end

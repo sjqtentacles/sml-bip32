@@ -181,6 +181,51 @@ struct
   fun xprvToBase58 x = Base58.encodeCheck (serializePrv x)
   fun xpubToBase58 x = Base58.encodeCheck (serializePub x)
 
+  (* deser32: 4-byte big-endian string slice -> Word32. *)
+  fun deser32 (s : string) : Word32.word =
+    let
+      fun at k = Word32.fromInt (Char.ord (String.sub (s, k)))
+    in
+      Word32.orb (Word32.<< (at 0, 0w24),
+        Word32.orb (Word32.<< (at 1, 0w16),
+          Word32.orb (Word32.<< (at 2, 0w8), at 3)))
+    end
+
+  (* Common 78-byte field layout: ver(4) depth(1) parentFp(4) childNumber(4)
+     chainCode(32) keyData(33). Returns the shared fields plus the keyData. *)
+  fun parseSerialized (expectedVer : string) (raw : string) =
+    if String.size raw <> 78 then NONE
+    else if String.substring (raw, 0, 4) <> expectedVer then NONE
+    else
+      SOME { depth       = Char.ord (String.sub (raw, 4)),
+             parentFp    = String.substring (raw, 5, 4),
+             childNumber = deser32 (String.substring (raw, 9, 4)),
+             chainCode   = String.substring (raw, 13, 32),
+             keyData     = String.substring (raw, 45, 33) }
+
+  fun xprvFromBase58 (s : string) : xprv option =
+    case Base58.decodeCheck s of
+      NONE => NONE
+    | SOME raw =>
+        (case parseSerialized verPrv raw of
+           NONE => NONE
+         | SOME f =>
+             if Char.ord (String.sub (#keyData f, 0)) <> 0 then NONE
+             else SOME { depth = #depth f, parentFp = #parentFp f,
+                         childNumber = #childNumber f, chainCode = #chainCode f,
+                         key = String.substring (#keyData f, 1, 32) })
+
+  fun xpubFromBase58 (s : string) : xpub option =
+    case Base58.decodeCheck s of
+      NONE => NONE
+    | SOME raw =>
+        (case parseSerialized verPub raw of
+           NONE => NONE
+         | SOME f =>
+             SOME { depth = #depth f, parentFp = #parentFp f,
+                    childNumber = #childNumber f, chainCode = #chainCode f,
+                    pubKey = #keyData f })
+
   fun toAddressP2PKH (x : xpub) =
     Base58.encodeCheck (byte 0 ^ hash160 (#pubKey x))
 end

@@ -59,6 +59,33 @@ struct
       val () = Harness.section "derivePath rejects malformed paths"
       val () = Harness.checkRaises "non-numeric component" (fn () => B.derivePath (mHex, "m/abc"))
       val () = Harness.checkRaises "index out of range" (fn () => B.derivePath (mHex, "m/4294967296"))
+
+      val () = Harness.section "Base58 decode round-trip"
+      (* known BIP-32 vector-1 master xprv / xpub *)
+      val xprv0 = #xprv (nth 0)
+      val xpub0 = #xpub (nth 0)
+      (* encode (decode s) = s on a known test vector *)
+      val () = Harness.checkString "xprvFromBase58 then re-encode == xprv"
+                 (xprv0, B.xprvToBase58 (valOf (B.xprvFromBase58 xprv0)))
+      val () = Harness.checkString "xpubFromBase58 then re-encode == xpub"
+                 (xpub0, B.xpubToBase58 (valOf (B.xpubFromBase58 xpub0)))
+      (* full chain: encode (decode (encode k)) = encode k for a derived node *)
+      val k = B.derivePath (mHex, "m/0'/1/2'")
+      val () = Harness.checkString "decode(encode xprv) round-trip on derived node"
+                 (B.xprvToBase58 k,
+                  B.xprvToBase58 (valOf (B.xprvFromBase58 (B.xprvToBase58 k))))
+      val () = Harness.checkString "decode(encode xpub) round-trip on derived node"
+                 (B.xpubToBase58 (B.neuter k),
+                  B.xpubToBase58 (valOf (B.xpubFromBase58 (B.xpubToBase58 (B.neuter k)))))
+      (* malformed / mismatched inputs -> NONE *)
+      val () = Harness.checkBool "xprvFromBase58 of an xpub = NONE (wrong version)"
+                 (true, not (Option.isSome (B.xprvFromBase58 xpub0)))
+      val () = Harness.checkBool "xpubFromBase58 of an xprv = NONE (wrong version)"
+                 (true, not (Option.isSome (B.xpubFromBase58 xprv0)))
+      val () = Harness.checkBool "xprvFromBase58 of garbage = NONE"
+                 (true, not (Option.isSome (B.xprvFromBase58 "not-valid-base58-0OIl")))
+      val () = Harness.checkBool "xprvFromBase58 of truncated = NONE"
+                 (true, not (Option.isSome (B.xprvFromBase58 (String.substring (xprv0, 0, 20)))))
     in
       ()
     end

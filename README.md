@@ -134,6 +134,8 @@ of the canonical `abandon … about` mnemonic.
 | `derivePath : xprv * string -> xprv` | walk a path like `"m/44'/0'/0'/0/0"`; raises `InvalidPath` |
 | `xprvToBase58 : xprv -> string` | 78-byte serialization, Base58Check (mainnet `0x0488ADE4`) |
 | `xpubToBase58 : xpub -> string` | 78-byte serialization, Base58Check (mainnet `0x0488B21E`) |
+| `xprvFromBase58 : string -> xprv option` | inverse of `xprvToBase58`; `NONE` on bad checksum/version/length |
+| `xpubFromBase58 : string -> xpub option` | inverse of `xpubToBase58`; `NONE` on bad checksum/version/length |
 | `toAddressP2PKH : xpub -> string` | mainnet P2PKH address: `Base58Check(0x00 ‖ RIPEMD160(SHA256(pubkey)))` |
 
 ### Conventions

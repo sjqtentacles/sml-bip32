@@ -67,6 +67,15 @@ sig
   val xprvToBase58 : xprv -> string
   val xpubToBase58 : xpub -> string
 
+  (* Inverse of the serializers above: parse a Base58Check-encoded extended key
+     back into its record. Returns NONE on a bad checksum / character, wrong
+     length, an unexpected version prefix, or (for xprv) a missing 0x00 key
+     prefix. Round-trips with the encoders:
+       xprvFromBase58 (xprvToBase58 x) = SOME x
+       xpubFromBase58 (xpubToBase58 x) = SOME x *)
+  val xprvFromBase58 : string -> xprv option
+  val xpubFromBase58 : string -> xpub option
+
   (* Mainnet P2PKH address: Base58Check(0x00 || hash160(pubkey)). *)
   val toAddressP2PKH : xpub -> string
 end
